@@ -1,4 +1,4 @@
-import { Tabs } from 'expo-router';
+import { Tabs,  } from 'expo-router'; 
 import React from 'react-native';
 import { Platform } from 'react-native';
 
@@ -34,10 +34,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="about"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'About',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
         }}
       />
       <Tabs.Screen
