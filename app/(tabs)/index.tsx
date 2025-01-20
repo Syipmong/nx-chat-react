@@ -2,12 +2,15 @@ import React from "react-native";
 import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { useColorScheme } from "@/hooks/useColorScheme.web";
+import {type ImageSource } from 'expo-image';
+
 import ImageViewer from "@/components/ImageViewer";
 import Button from "@/components/Button";
 import * as ImagePicker from 'expo-image-picker';
 import IconButton from "@/components/IconButton";
 import CircleButton from "@/components/CircleButton";
 import EmojiPicker from "@/components/EmojiPicker";
+import EmojiList from "@/components/EmojiList";
 
 const PlaceholderImage = require("../../assets/images/latest-1.jpg");
 
@@ -15,6 +18,7 @@ export default function HomeScreen() {
   const [selectedImage, setSelectedImage] = useState<string | undefined>(undefined);
   const [showAppOptions, setShowAppOptions] = useState<boolean>(false);
   const [isModalVisible, setModalVisible] = useState<boolean>(false);
+  const [selectedEmoji, setSelectedEmoji] = useState<ImageSource | undefined>(undefined);
   const colorScheme = useColorScheme();
   const pickImage = async () =>{
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -104,7 +108,7 @@ export default function HomeScreen() {
         </View>
       )}
       <EmojiPicker isVisible={isModalVisible} onClose={onModalClose}>
-        
+        <EmojiList onSelect={setSelectedEmoji} onCloseModal={onModalClose} />
       </EmojiPicker>
     </View>
   );

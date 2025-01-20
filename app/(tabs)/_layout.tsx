@@ -1,6 +1,8 @@
 import React from "react";
 import { Stack, Tabs, Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from 'expo-haptics';
+import { HapticTab } from '../../components/HapticTab';
 
 export default function TabLayout() {
   return (
