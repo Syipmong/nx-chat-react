@@ -1,21 +1,58 @@
-import { Link } from "expo-router";
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React from "react-native";
+import { useState } from "react";
+import { View, StyleSheet } from "react-native";
 import { useColorScheme } from "@/hooks/useColorScheme.web";
-import { StatusBar } from "expo-status-bar";
-import { Image } from "react-native";
+import ImageViewer from "@/components/ImageViewer";
+import Button from "@/components/Button";
+import * as ImagePicker from 'expo-image-picker';
+import IconButton from "@/components/IconButton";
+import CircleButton from "@/components/CircleButton";
+import EmojiPicker from "@/components/EmojiPicker";
 
-const placeholderImage = require("../../assets/images/latest-1.jpg");
+const PlaceholderImage = require("../../assets/images/latest-1.jpg");
 
 export default function HomeScreen() {
+  const [selectedImage, setSelectedImage] = useState<string | undefined>(undefined);
+  const [showAppOptions, setShowAppOptions] = useState<boolean>(false);
+  const [isModalVisible, setModalVisible] = useState<boolean>(false);
   const colorScheme = useColorScheme();
+  const pickImage = async () =>{
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      quality: 1
+    })
+
+    if(!result.canceled){
+      setSelectedImage(result.assets[0].uri);
+      showAppOptions(true);
+    }else{
+      console.log('You did not select an image');
+    }
+  }
+
+  const onReset = () =>{
+    setSelectedImage(undefined);
+    setShowAppOptions(false);
+  }
+
+  const onAddSticker = () =>{
+    setModalVisible(true);
+  }
+
+  const onSaveImageAsync = () =>{
+    console.log('Save image');
+  }
+
+  const onModalClose = () =>{
+    setModalVisible(false);
+  }
 
   const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colorScheme === 'dark' ? '#333' : '#f8f8f8',
-      justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
     },
     text: {
       fontSize: 20,
@@ -30,23 +67,45 @@ export default function HomeScreen() {
     },
     imageContainer:{
       flex: 1,
+      paddingTop: 28,
+      alignItems: 'center',
     },
-    image: {
-      width: 320,
-      height: 440,
-      borderRadius: 14,
-    }
+    footerContainer:{
+      flex: 1/3,
+      alignItems: 'center',
+    },
+    optionsContainer: {
+      position: 'absolute',
+      bottom: 80,
+    },
+    optionsRow: {
+      alignItems: 'center',
+      flexDirection: 'row',
+    },
   });
 
   return (
-    <>
-      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-      <View style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image source={placeholderImage} style={styles.image} />
+        <ImageViewer imgSource={PlaceholderImage} selectedImage={selectedImage} />
       </View>
-      </View>
-      
-    </>
+      {showAppOptions ? (
+         <View style={styles.optionsContainer}>
+         <View style={styles.optionsRow}>
+           <IconButton icon="refresh" label="Reset" onPress={onReset} />
+           <CircleButton onPress={onAddSticker} />
+           <IconButton icon="save-alt" label="Save" onPress={onSaveImageAsync} />
+         </View>
+       </View>
+      ) : (
+        <View style={styles.footerContainer}>
+          <Button theme="primary" label="Choose a photo" onPress={pickImage} />
+          <Button label="Use this photo" onPress={() => setShowAppOptions(true)} />
+        </View>
+      )}
+      <EmojiPicker isVisible={isModalVisible} onClose={onModalClose}>
+        
+      </EmojiPicker>
+    </View>
   );
 }
